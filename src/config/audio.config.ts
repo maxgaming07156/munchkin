@@ -18,10 +18,10 @@ import type { AudioFiles, AudioVolumeConfig, ScoreConfig } from '@/types/audio.t
 
 export const audioFiles: AudioFiles = {
   // Layer 1 — Environment: ambient room tone, looped
-  environment: '/audio/ambient/night-room.mp3',
+  environment: 'https://actions.google.com/sounds/v1/water/rain_on_roof.ogg',
 
   // Layer 2 — Score: the musical piece (isolated, replaceable)
-  score: '/audio/score/score-placeholder.mp3',
+  score: 'https://upload.wikimedia.org/wikipedia/commons/3/34/Claude_Debussy_-_Clair_de_lune.ogg',
 
   // Layer 3 — Scene Textures: event-driven per-scene sounds
   scene: {
