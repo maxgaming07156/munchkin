@@ -37,10 +37,11 @@
   --color-convergence:    #F5F0EE;
 
   /* ─── TYPOGRAPHY ──────────────────────────────────────────────────────────── */
-  --font-display:  'Cormorant', serif;
-  --font-body:     'Cormorant Garamond', serif;
-  --font-mono:     'JetBrains Mono', monospace;   /* Opening Cinematic ONLY */
-  --font-ui:       'Inter', sans-serif;            /* Password + Audio Toggle ONLY */
+  /* Chains through next/font loaded CSS variables — injected via layout.tsx className */
+  --font-display:  var(--font-display-loaded, 'Cormorant', serif);
+  --font-body:     var(--font-body-loaded, 'Cormorant Garamond', serif);
+  --font-mono:     var(--font-mono-loaded, 'JetBrains Mono', monospace);
+  --font-ui:       var(--font-ui-loaded, 'Inter', sans-serif);
 
   /* ─── MOTION — EASING ─────────────────────────────────────────────────────── */
   /* These are the ONLY eases used in this project */

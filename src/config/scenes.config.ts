@@ -389,7 +389,7 @@ export const scenes: SceneConfig[] = [
     component: S23_Letters,
     transition: 'vertical-veil',    // Act III → Act IV boundary
     pinned: false,
-    interactionType: 'letter-unfold',
+    interactionType: 'scroll',
     audioLayer3: audioFiles.scene.paperRustle,
     colorTemperature: 'dual',
     isActBoundary: true,
@@ -461,7 +461,7 @@ export const scenes: SceneConfig[] = [
     transition: 'dissolve',
     pinned: true,
     pinScrollDistance: '350vh',
-    interactionType: 'letter-unfold',
+    interactionType: 'scroll',
     audioLayer3: undefined,   // All layers except solo piano fade out here
     colorTemperature: 'unified',
   },

@@ -54,10 +54,10 @@ export const motionEases: Record<EaseName, [number, number, number, number]> = {
  * After registration, you can use the EaseName directly (e.g. ease: 'narrative').
  */
 export const gsapEaseStrings: Record<EaseName, string> = {
-  narrative: 'cubic-bezier(0.25, 0.0, 0.10, 1.0)',
-  arrive:    'cubic-bezier(0.0, 0.0, 0.15, 1.0)',
-  depart:    'cubic-bezier(0.35, 0.0, 1.0, 1.0)',
-  breath:    'cubic-bezier(0.45, 0.0, 0.40, 1.0)',
+  narrative: '0.25, 0.0, 0.10, 1.0',
+  arrive:    '0.0, 0.0, 0.15, 1.0',
+  depart:    '0.35, 0.0, 1.0, 1.0',
+  breath:    '0.45, 0.0, 0.40, 1.0',
 }
 
 // ─── CSS Format ───────────────────────────────────────────────────────────────

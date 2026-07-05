@@ -1,28 +1,51 @@
+'use client'
+
 /**
  * Root Page — "For My Munchkin"
  *
- * The entry point of the experience.
- * Reads auth state and renders either the password gate or the experience.
+ * Manages the top-level application state machine:
  *
- * This is a Client Component because it reads from Zustand stores
- * which rely on browser sessionStorage.
+ *   loading → gate (if not verified)
+ *          → experience (if already verified this session)
+ *
+ *   gate → experience (after correct password)
+ *
+ *   experience → (managed internally by ExperienceRoot)
+ *
+ * The loading screen always plays on first render — it's the
+ * entrance into the universe, regardless of auth state.
  */
 
-'use client'
-
+import { useState, useCallback } from 'react'
 import { useAuthStore } from '@/store/auth.store'
-
-// These will be built in Phase 3 and Phase 4.
-// For now: minimal shells that confirm the routing works.
-import { PasswordGate } from '@/components/scenes/act-1/S01_Password'
+import { LoadingScreen } from '@/components/scenes/act-1/S00_Loading'
+import { PasswordGate }  from '@/components/scenes/act-1/S01_Password'
 import { ExperienceRoot } from '@/components/core/ExperienceRoot'
 
-export default function Home() {
-  const isVerified = useAuthStore((state) => state.isVerified)
+type AppState = 'loading' | 'gate' | 'experience'
 
-  return (
-    <main>
-      {isVerified ? <ExperienceRoot /> : <PasswordGate />}
-    </main>
-  )
+export default function Home() {
+  const isVerified = useAuthStore((s) => s.isVerified)
+  const [appState, setAppState] = useState<AppState>('loading')
+
+  // Called when the loading animation completes (~2.6s)
+  const handleLoadingComplete = useCallback(() => {
+    // If already verified (same session), skip the gate
+    setAppState(isVerified ? 'experience' : 'gate')
+  }, [isVerified])
+
+  // Called when the correct password is entered
+  const handleVerified = useCallback(() => {
+    setAppState('experience')
+  }, [])
+
+  if (appState === 'loading') {
+    return <LoadingScreen onComplete={handleLoadingComplete} />
+  }
+
+  if (appState === 'gate') {
+    return <PasswordGate onVerified={handleVerified} />
+  }
+
+  return <ExperienceRoot />
 }

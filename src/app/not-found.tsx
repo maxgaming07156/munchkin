@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * 404 page for "For My Munchkin"
  *

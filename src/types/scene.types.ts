@@ -134,14 +134,17 @@ export interface SceneConfig {
  * Every scene component implements this interface.
  */
 export interface SceneProps {
+  /** The configuration object for this scene */
+  readonly scene: SceneConfig
+
   /** Whether this scene is currently the active scene */
   readonly isActive: boolean
 
   /** Whether this scene is currently in its entrance transition */
-  readonly isEntering: boolean
+  readonly isEntering?: boolean
 
   /** Whether this scene is currently in its exit transition */
-  readonly isExiting: boolean
+  readonly isExiting?: boolean
 
   /**
    * Called by the scene when its content is fully complete.

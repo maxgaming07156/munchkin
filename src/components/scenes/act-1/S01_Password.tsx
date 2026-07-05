@@ -1,27 +1,46 @@
 'use client'
 
 /**
- * S01_Password — The password gate scene.
+ * S01_Password — The gate between worlds.
  *
- * This is the first thing Razane sees (after loading).
- * A minimal, warm input field. No chrome. No explanation.
- * Just a prompt that says: this is for you.
+ * A single password field. No explanation. No logo.
+ * She knows this is for her.
  *
- * NOTE: This is a production-quality shell during Phase 1.
- * The full visual design (animations, entrance, audio) is built in Phase 3.
- * The authentication logic is FULLY IMPLEMENTED here.
+ * The password is her birthday: 1708 (17 August).
+ *
+ * Visual design:
+ *   - Full dark screen, just as the loading screen fades out
+ *   - A faint label: "enter to begin" — small caps, barely there
+ *   - The input: a single underline, no box, no border-radius
+ *   - Characters appear as large, centered dots (password mode)
+ *   - Wrong password: the whole form shakes horizontally
+ *   - After 3 wrong attempts: a warmer message appears
+ *
+ * Animation: entrance fades in over 800ms after mounting.
  */
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useAuthStore } from '@/store/auth.store'
 
-export function PasswordGate() {
+interface PasswordGateProps {
+  /** Called when the correct password has been entered */
+  onVerified?: () => void
+}
+
+export function PasswordGate({ onVerified }: PasswordGateProps) {
   const [input,      setInput]      = useState('')
   const [isShaking,  setIsShaking]  = useState(false)
   const [hasError,   setHasError]   = useState(false)
+  const [isVisible,  setIsVisible]  = useState(false)
   const inputRef                    = useRef<HTMLInputElement>(null)
-  const verify                      = useAuthStore((state) => state.verify)
-  const attemptCount                = useAuthStore((state) => state.attemptCount)
+  const verify                      = useAuthStore((s) => s.verify)
+  const attemptCount                = useAuthStore((s) => s.attemptCount)
+
+  // Entrance fade-in
+  useEffect(() => {
+    const t = setTimeout(() => setIsVisible(true), 50)
+    return () => clearTimeout(t)
+  }, [])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -29,20 +48,23 @@ export function PasswordGate() {
 
     const isCorrect = verify(input)
 
-    if (!isCorrect) {
+    if (isCorrect) {
+      // Let the entrance animation play first, then call onVerified
+      setTimeout(() => onVerified?.(), 300)
+    } else {
       setHasError(true)
       setIsShaking(true)
       setInput('')
-
-      // Reset shake animation after it completes
       setTimeout(() => setIsShaking(false), 600)
-
-      // Focus input for re-entry
       inputRef.current?.focus()
     }
-    // If correct: useAuthStore sets isVerified = true
-    // page.tsx re-renders and shows ExperienceRoot automatically
   }
+
+  const errorMessage = attemptCount > 3
+    ? 'Think carefully.'
+    : attemptCount > 1
+    ? 'Try again.'
+    : 'Incorrect.'
 
   return (
     <div
@@ -54,27 +76,41 @@ export function PasswordGate() {
         flexDirection:   'column',
         alignItems:      'center',
         justifyContent:  'center',
-        gap:             'var(--space-4)',
+        zIndex:          50,
+        opacity:         isVisible ? 1 : 0,
+        transition:      'opacity 800ms var(--ease-narrative)',
       }}
     >
       <form
         onSubmit={handleSubmit}
         style={{
-          display:        'flex',
-          flexDirection:  'column',
-          alignItems:     'center',
-          gap:            'var(--space-3)',
-          animation:      isShaking ? 'shake 0.6s var(--ease-breath)' : undefined,
+          display:       'flex',
+          flexDirection: 'column',
+          alignItems:    'center',
+          gap:           '28px',
+          animation:     isShaking ? 'password-shake 0.6s var(--ease-breath)' : undefined,
         }}
+        noValidate
       >
+        {/* Label */}
         <label
           htmlFor="password-input"
-          className="text-ui"
-          style={{ marginBottom: 'var(--space-2)' }}
+          style={{
+            fontFamily:    'var(--font-ui)',
+            fontSize:      '0.625rem',
+            fontWeight:    300,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase' as const,
+            color:         hasError
+              ? 'var(--color-maroon-glow)'
+              : 'var(--color-text-tertiary)',
+            transition:    'color 400ms var(--ease-breath)',
+          }}
         >
-          Enter to begin
+          {hasError ? errorMessage : 'enter to begin'}
         </label>
 
+        {/* Input */}
         <input
           ref={inputRef}
           id="password-input"
@@ -83,67 +119,61 @@ export function PasswordGate() {
           value={input}
           onChange={(e) => {
             setInput(e.target.value)
-            setHasError(false)
+            if (hasError) setHasError(false)
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSubmit(e as unknown as React.FormEvent)
           }}
           autoFocus
           autoComplete="off"
           maxLength={20}
           aria-label="Password"
           aria-invalid={hasError}
-          aria-describedby={hasError ? 'password-error' : undefined}
+          placeholder="····"
           style={{
             background:    'transparent',
             border:        'none',
-            borderBottom:  `1px solid ${hasError ? 'var(--color-maroon-glow)' : 'var(--color-text-tertiary)'}`,
+            borderBottom:  `1px solid ${hasError ? 'var(--color-maroon)' : 'rgba(242,235,228,0.15)'}`,
             color:         'var(--color-text-primary)',
             fontFamily:    'var(--font-ui)',
             fontSize:      '1.5rem',
             fontWeight:    300,
-            letterSpacing: '0.5em',
-            textAlign:     'center',
-            width:         '8ch',
-            padding:       'var(--space-2) 0',
+            letterSpacing: '0.6em',
+            textAlign:     'center' as const,
+            width:         '120px',
+            padding:       '12px 0',
             outline:       'none',
-            transition:    `border-color var(--duration-short) var(--ease-breath)`,
+            caretColor:    'var(--color-seafoam)',
+            transition:    'border-color 400ms var(--ease-breath)',
           }}
         />
 
-        {hasError && (
-          <p
-            id="password-error"
-            role="alert"
-            className="text-ui-sm"
-            style={{
-              color:   'var(--color-maroon-glow)',
-              opacity: 0.8,
-            }}
-          >
-            {attemptCount > 2 ? 'Think carefully.' : 'Try again.'}
-          </p>
-        )}
-
-        {/* Visually hidden submit — Enter key triggers form */}
-        <button type="submit" className="sr-only">
+        {/* Invisible submit button — Enter key triggers form */}
+        <button type="submit" style={{ display: 'none' }} aria-hidden="true">
           Submit
         </button>
       </form>
 
-      {/*
-       * Inline shake keyframe — isolated here so it doesn't pollute globals.
-       * Full animation system is in animations.css for the actual scenes.
-       */}
       <style>{`
-        @keyframes shake {
+        @keyframes password-shake {
           0%, 100% { transform: translateX(0); }
-          20%       { transform: translateX(-8px); }
-          40%       { transform: translateX(8px); }
-          60%       { transform: translateX(-5px); }
-          80%       { transform: translateX(5px); }
+          15%       { transform: translateX(-10px); }
+          30%       { transform: translateX(10px); }
+          45%       { transform: translateX(-7px); }
+          60%       { transform: translateX(7px); }
+          75%       { transform: translateX(-4px); }
+          90%       { transform: translateX(4px); }
         }
       `}</style>
     </div>
   )
 }
 
-// Default export for scene lazy loading via scenes.config.ts
-export default PasswordGate
+// Named export used directly by page.tsx
+// Default export below is SceneProps-compatible for the scene manifest
+import type { SceneProps } from '@/types/scene.types'
+function PasswordGateScene(_props: SceneProps) {
+  return <PasswordGate />
+}
+export default PasswordGateScene
+

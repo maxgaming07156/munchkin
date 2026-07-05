@@ -1,44 +1,71 @@
 'use client'
 
 /**
- * ExperienceRoot — The orchestration shell for the full experience.
+ * ExperienceRoot — The full post-auth experience.
  *
- * Rendered after password verification.
- * Mounts the Three.js environment canvas and hands off to SceneRenderer.
+ * Internal state machine:
+ *   'cinematic' → S02_OpeningCinematic (typewriter sequence)
+ *   'story'     → SceneRenderer (Phase 4) — placeholder for now
  *
- * NOTE: This component is a shell during Phase 1.
- * Full implementation is built in Phase 3 (Loading + Opening Cinematic)
- * and Phase 4 (Story Engine / SceneRenderer).
+ * Layer stack:
+ *   z-index 0:    EnvironmentCanvas (Three.js stars) — always mounted
+ *   z-index 2:    Grain overlay (in layout.tsx)
+ *   z-index 10:   Scene/cinematic content
+ *   z-index 9000: AudioToggle
+ *   z-index 9998: Cursor aura
+ *   z-index 9999: Cursor dot
+ *
+ * The canvas mounts immediately on ExperienceRoot render,
+ * before the cinematic starts — so stars are loading in background
+ * and appear naturally as the text types.
  */
 
+import { useState, useCallback } from 'react'
+import dynamic from 'next/dynamic'
+import { OpeningCinematic } from '@/components/scenes/act-1/S02_OpeningCinematic'
+import { AudioToggle }      from '@/components/ui/AudioToggle'
+
+type ExperiencePhase = 'cinematic' | 'story'
+
+// Dynamic imports with ssr: false — both require browser APIs
+const EnvironmentCanvas = dynamic(
+  () => import('@/components/environment/EnvironmentCanvas').then((m) => m.EnvironmentCanvas),
+  { ssr: false, loading: () => null }
+)
+
+const CustomCursor = dynamic(
+  () => import('@/components/core/CustomCursor').then((m) => m.CustomCursor),
+  { ssr: false, loading: () => null }
+)
+
+import { SceneRenderer }    from '@/components/engine/SceneRenderer'
+
 export function ExperienceRoot() {
+  const [phase, setPhase] = useState<ExperiencePhase>('cinematic')
+
+  const handleCinematicComplete = useCallback(() => {
+    setPhase('story')
+  }, [])
+
   return (
-    <div
-      style={{
-        position:        'relative',
-        width:           '100vw',
-        minHeight:       '100dvh',
-        backgroundColor: 'var(--color-bg)',
-        display:         'flex',
-        alignItems:      'center',
-        justifyContent:  'center',
-      }}
-    >
-      {/* Phase 2: EnvironmentCanvas will be mounted here */}
-      {/* Phase 3: Loading + Opening Cinematic scenes */}
-      {/* Phase 4: SceneRenderer will replace this placeholder */}
-      <p
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontSize:   'clamp(1rem, 2vw, 1.5rem)',
-          fontWeight: 300,
-          color:      'var(--color-text-secondary)',
-          letterSpacing: '0.05em',
-          opacity:    0.6,
-        }}
-      >
-        Phase 1 complete.
-      </p>
-    </div>
+    <>
+      {/* Always mounted: the star field behind everything */}
+      <EnvironmentCanvas />
+
+      {/* Always mounted: lerped cursor */}
+      <CustomCursor />
+
+      {/* Audio toggle — hidden during cinematic, visible in story */}
+      <AudioToggle hidden={phase === 'cinematic'} />
+
+      {/* Scene content layer */}
+      {phase === 'cinematic' && (
+        <OpeningCinematic onComplete={handleCinematicComplete} />
+      )}
+
+      {phase === 'story' && (
+        <SceneRenderer />
+      )}
+    </>
   )
 }

@@ -12,8 +12,8 @@ import type { AudioStore } from '@/types/audio.types'
 import { defaultVolumes } from '@/config/audio.config'
 
 const initialState = {
-  isEnabled:          false,
-  hasUserInteracted:  false,
+  isEnabled:          true,
+  hasUserInteracted:  true,
   layer1Volume:       defaultVolumes.layer1,
   layer2Volume:       defaultVolumes.layer2,
   layer3Volume:       defaultVolumes.layer3,

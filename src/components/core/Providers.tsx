@@ -18,6 +18,7 @@ import { useEffect, useRef } from 'react'
 import Lenis from 'lenis'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import { registerGSAP, connectGSAPToLenis } from '@/lib/animation/gsap.config'
+import { AudioManager } from '@/components/audio/AudioManager'
 
 interface ProvidersProps {
   children: React.ReactNode
@@ -55,6 +56,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     // LazyMotion with domAnimation tree-shakes Framer Motion to ~18kb
     <LazyMotion features={domAnimation} strict>
+      <AudioManager />
       {children}
     </LazyMotion>
   )
