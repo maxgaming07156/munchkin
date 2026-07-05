@@ -1,0 +1,7 @@
+# For My Munchkin — .prettierignore
+
+node_modules/
+.next/
+out/
+public/
+*.md

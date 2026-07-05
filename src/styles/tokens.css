@@ -1,0 +1,92 @@
+/**
+ * Design Token System for "For My Munchkin"
+ *
+ * This is the single source of truth for all design values.
+ * Every color, duration, ease, and spacing value is defined here.
+ *
+ * Rules:
+ *   - CSS defaults (ease, linear, ease-in, ease-out) are NEVER used
+ *   - Pure black (#000000) and pure white (#FFFFFF) are NEVER used
+ *   - No new colors are introduced mid-project — the palette is fixed here
+ *   - The accent colors (maroon, seafoam) are narrative, not decorative
+ */
+
+/* ─── COLORS — FOUNDATION ───────────────────────────────────────────────────── */
+:root {
+  --color-bg:             #080608;   /* Near-black, leaning warm/violet */
+  --color-surface:        #100D0F;   /* Lifted surface — scene layers */
+  --color-elevated:       #1A151A;   /* Card-level surfaces */
+
+  /* ─── COLORS — TYPOGRAPHY ─────────────────────────────────────────────────── */
+  --color-text-primary:   #F2EBE4;   /* Warm cream — old paper quality */
+  --color-text-secondary: #A09088;   /* Muted warmth — secondary prose */
+  --color-text-tertiary:  #5C5058;   /* Near-invisible — utility only */
+
+  /* ─── COLORS — NARRATIVE ──────────────────────────────────────────────────── */
+  /* Maroon: Love, Devotion, Warmth */
+  --color-maroon:         #7D2535;
+  --color-maroon-glow:    #A33048;   /* Bloom/light effects only — never as fill */
+  --color-maroon-dim:     #4A1520;   /* Shadows, dark pools of warmth */
+
+  /* Seafoam: Peace, Comfort, Home */
+  --color-seafoam:        #6B9E98;
+  --color-seafoam-glow:   #8DC4BD;   /* Bloom/light effects only — never as fill */
+  --color-seafoam-dim:    #3A5E5A;   /* Deeper waters — used in Act I backgrounds */
+
+  /* Convergence: Used ONCE. At Stars Becoming One (Scene 27). Earned. */
+  --color-convergence:    #F5F0EE;
+
+  /* ─── TYPOGRAPHY ──────────────────────────────────────────────────────────── */
+  --font-display:  'Cormorant', serif;
+  --font-body:     'Cormorant Garamond', serif;
+  --font-mono:     'JetBrains Mono', monospace;   /* Opening Cinematic ONLY */
+  --font-ui:       'Inter', sans-serif;            /* Password + Audio Toggle ONLY */
+
+  /* ─── MOTION — EASING ─────────────────────────────────────────────────────── */
+  /* These are the ONLY eases used in this project */
+  --ease-narrative:  cubic-bezier(0.25, 0.0, 0.10, 1.0);   /* Primary: slow in, slow out */
+  --ease-arrive:     cubic-bezier(0.0,  0.0, 0.15, 1.0);   /* Fast start, very slow settle */
+  --ease-depart:     cubic-bezier(0.35, 0.0, 1.0,  1.0);   /* Slow start, fast end */
+  --ease-breath:     cubic-bezier(0.45, 0.0, 0.40, 1.0);   /* Mid-weight micro-interactions */
+
+  /* ─── MOTION — DURATION ───────────────────────────────────────────────────── */
+  --duration-micro:      300ms;
+  --duration-short:      600ms;
+  --duration-medium:     1200ms;
+  --duration-long:       1800ms;
+  --duration-cinematic:  2400ms;
+
+  /* ─── SPACING (8px base grid) ─────────────────────────────────────────────── */
+  --space-1:   8px;
+  --space-2:   16px;
+  --space-3:   24px;
+  --space-4:   32px;
+  --space-6:   48px;
+  --space-8:   64px;
+  --space-12:  96px;
+  --space-16:  128px;
+  --space-24:  192px;
+
+  /* ─── LAYOUT ──────────────────────────────────────────────────────────────── */
+  --max-prose-width:   62ch;
+  --scene-padding-x:   clamp(24px, 8vw, 120px);
+  --scene-padding-y:   clamp(48px, 12vh, 128px);
+
+  /* ─── GRAIN ───────────────────────────────────────────────────────────────── */
+  --grain-opacity:     0.035;
+  --grain-blend:       overlay;
+
+  /* ─── VIGNETTE ────────────────────────────────────────────────────────────── */
+  --vignette-color:    rgba(8, 6, 8, 0.60);
+
+  /* ─── FOCUS ───────────────────────────────────────────────────────────────── */
+  --focus-color:       var(--color-seafoam);
+  --focus-width:       2px;
+  --focus-offset:      4px;
+
+  /* ─── CURSOR ──────────────────────────────────────────────────────────────── */
+  --cursor-size-rest:   10px;
+  --cursor-size-hover:  36px;
+  --cursor-color:       var(--color-text-primary);
+  --cursor-opacity:     0.25;
+}

@@ -1,0 +1,6 @@
+/**
+ * robots.txt for "For My Munchkin"
+ * This experience is private and must not be indexed.
+ */
+User-agent: *
+Disallow: /

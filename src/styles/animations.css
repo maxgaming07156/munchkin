@@ -1,0 +1,100 @@
+/**
+ * Animation keyframes for "For My Munchkin"
+ *
+ * Defines CSS keyframe animations used globally.
+ * GSAP and Framer Motion handle complex animations programmatically.
+ * This file handles: grain texture movement, cursor pulse, blink cursor.
+ *
+ * All animation durations and eases reference token variables.
+ */
+
+/* ─── GRAIN TEXTURE MOVEMENT ────────────────────────────────────────────────── */
+/*
+ * The grain overlay shifts position very slowly and randomly.
+ * This creates the illusion of organic, living film grain.
+ * The movement is subtle — the texture shifts by only a few pixels.
+ */
+@keyframes grain-shift {
+  0%   { transform: translate(0%, 0%); }
+  10%  { transform: translate(-1%, -1%); }
+  20%  { transform: translate(1%, -2%); }
+  30%  { transform: translate(-2%, 1%); }
+  40%  { transform: translate(2%, -1%); }
+  50%  { transform: translate(-1%, 2%); }
+  60%  { transform: translate(1%, 1%); }
+  70%  { transform: translate(-2%, -1%); }
+  80%  { transform: translate(2%, 2%); }
+  90%  { transform: translate(-1%, -2%); }
+  100% { transform: translate(0%, 0%); }
+}
+
+/* ─── TERMINAL CURSOR BLINK ─────────────────────────────────────────────────── */
+/*
+ * The blinking block cursor in the Opening Cinematic.
+ * Classic terminal blink: on for 530ms, off for 470ms.
+ * Not a smooth fade — a binary blink. This is intentional.
+ */
+@keyframes cursor-blink {
+  0%, 52%  { opacity: 1; }
+  53%, 100%{ opacity: 0; }
+}
+
+/* ─── VIGNETTE PULSE ─────────────────────────────────────────────────────────── */
+/*
+ * The edge vignette breathes very slightly during high-emotion pinned scenes.
+ * Applied by the SceneWrapper component when pinned is true.
+ * Duration: 4s — one breath per four seconds.
+ */
+@keyframes vignette-breathe {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 0.75; }
+}
+
+/* ─── LOADING STAR REVEAL ────────────────────────────────────────────────────── */
+/*
+ * Individual star nodes in the loading scene appear sequentially.
+ * Each star fades from opacity 0 → 0.7 with a slight scale from 0.8 → 1.
+ */
+@keyframes star-appear {
+  from {
+    opacity:   0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity:   0.7;
+    transform: scale(1);
+  }
+}
+
+/* ─── AUDIO INDICATOR PULSE ──────────────────────────────────────────────────── */
+/*
+ * The audio toggle's indicator dot pulses gently when audio is enabled.
+ * A very slow, barely perceptible rhythm — like a heartbeat at rest.
+ */
+@keyframes audio-pulse {
+  0%, 100% {
+    opacity:    0.6;
+    transform:  scale(1);
+  }
+  50% {
+    opacity:    1;
+    transform:  scale(1.15);
+  }
+}
+
+/* ─── SCENE FADE-IN ──────────────────────────────────────────────────────────── */
+/*
+ * Base scene entrance animation.
+ * Used as a CSS fallback when GSAP is not yet initialized.
+ * GSAP overrides this once loaded.
+ */
+@keyframes scene-fade-in {
+  from {
+    opacity:   0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
